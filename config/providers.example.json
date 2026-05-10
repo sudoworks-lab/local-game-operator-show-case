@@ -1,0 +1,19 @@
+{
+  "activeProvider": "mock",
+  "providers": {
+    "mock": {
+      "type": "mock",
+      "label": "Built-in Mock Provider"
+    },
+    "local-http": {
+      "type": "http",
+      "label": "Local HTTP Decision Provider",
+      "endpoint": "http://localhost:8787/analyze",
+      "healthEndpoint": "http://localhost:8787/health",
+      "timeoutMs": 2500,
+      "headers": {
+        "x-local-game-operator": "1"
+      }
+    }
+  }
+}

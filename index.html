@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://localhost:* http://localhost:*;"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Local Game Operator</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Windows Local Operator Desk</p>
+          <h1>local-game-operator</h1>
+          <p class="hero-copy">
+            Unity / Roblox のローカル操作と自動テスト土台をまとめるための
+            Electron 操作卓です。
+          </p>
+        </div>
+        <button id="emergency-stop" class="danger-button" type="button">
+          緊急停止
+        </button>
+      </header>
+
+      <main class="dashboard">
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <p class="panel-title">Target Window</p>
+              <h2>ウィンドウ選択</h2>
+            </div>
+            <button id="refresh-windows" type="button">画面更新</button>
+          </div>
+
+          <label class="field">
+            <span>トップレベルウィンドウ</span>
+            <select id="window-select"></select>
+          </label>
+
+          <div class="target-meta">
+            <div>
+              <span class="meta-label">選択中ターゲット</span>
+              <p id="selected-target" class="meta-value">未選択</p>
+            </div>
+            <div>
+              <span class="meta-label">利用可能な件数</span>
+              <p id="window-count" class="meta-value">0</p>
+            </div>
+          </div>
+
+          <div class="button-row">
+            <button id="focus-target" type="button">前面化</button>
+            <button id="refresh-preview" type="button">プレビュー更新</button>
+            <button id="save-screenshot" type="button">スクショ保存</button>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <p class="panel-title">Preview</p>
+              <h2>スクリーンプレビュー</h2>
+            </div>
+          </div>
+
+          <div class="preview-frame">
+            <img id="preview-image" alt="Selected window preview" />
+            <div id="preview-empty" class="preview-empty">
+              まだプレビューを取得していません。
+            </div>
+          </div>
+          <p id="preview-meta" class="support-text">
+            対象ウィンドウを選び、プレビュー更新を押してください。
+          </p>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <p class="panel-title">Keyboard</p>
+              <h2>操作ボタン</h2>
+            </div>
+          </div>
+
+          <div class="button-grid">
+            <button class="tap-key" data-key="W" type="button">W</button>
+            <button class="tap-key" data-key="A" type="button">A</button>
+            <button class="tap-key" data-key="S" type="button">S</button>
+            <button class="tap-key" data-key="D" type="button">D</button>
+            <button class="tap-key" data-key="Space" type="button">Space</button>
+            <button class="tap-key" data-key="Enter" type="button">Enter</button>
+            <button class="tap-key" data-key="Esc" type="button">Esc</button>
+          </div>
+
+          <div class="button-row">
+            <button class="hold-key" data-key="W" data-ms="500" type="button">
+              Hold W 500ms
+            </button>
+            <button
+              class="hold-key"
+              data-key="Shift"
+              data-ms="500"
+              type="button"
+            >
+              Hold Shift 500ms
+            </button>
+          </div>
+
+          <label class="field">
+            <span>任意キー入力</span>
+            <input
+              id="custom-key"
+              type="text"
+              value="E"
+              placeholder="例: E / F / R / Left / Shift"
+            />
+          </label>
+
+          <div class="button-row">
+            <button id="custom-tap" type="button">Tap</button>
+            <button id="custom-hold" type="button">Hold 500ms</button>
+            <button id="custom-keydown" type="button">Key Down</button>
+            <button id="custom-keyup" type="button">Key Up</button>
+          </div>
+
+          <label class="field">
+            <span>キーシーケンス</span>
+            <input
+              id="sequence-input"
+              type="text"
+              value="W,A,S,D"
+              placeholder="例: W,A,S,D"
+            />
+          </label>
+
+          <div class="button-row">
+            <button id="run-sequence" type="button">Sequence 実行</button>
+            <button id="release-all" type="button">全キー解放</button>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <p class="panel-title">Provider</p>
+              <h2>provider 状態</h2>
+            </div>
+            <button id="refresh-provider" type="button">状態更新</button>
+          </div>
+
+          <div class="provider-grid">
+            <div>
+              <span class="meta-label">Active Provider</span>
+              <p id="provider-status" class="meta-value">確認中...</p>
+            </div>
+            <div>
+              <span class="meta-label">Last Decision</span>
+              <p id="provider-decision" class="meta-value">
+                まだ analyze を実行していません。
+              </p>
+            </div>
+          </div>
+
+          <div class="button-row">
+            <button id="analyze-preview" type="button">
+              Analyze Preview
+            </button>
+          </div>
+        </section>
+
+        <section class="panel panel-full">
+          <div class="panel-header">
+            <div>
+              <p class="panel-title">Logs</p>
+              <h2>操作ログ</h2>
+            </div>
+          </div>
+
+          <p id="status-line" class="status-line">起動中...</p>
+          <ul id="log-list" class="log-list"></ul>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="/src/renderer/index.ts"></script>
+  </body>
+</html>
