@@ -2,7 +2,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { verifyArtifactLayout } = require("./artifacts.ts");
 
-const REQUIRED_SCRIPTS = ["build", "test", "ops"];
+const REQUIRED_SCRIPTS = ["build", "verify", "test", "ops"];
 const REQUIRED_TS_INCLUDES = ["src/**/*.ts", "tests/**/*.ts"];
 const REQUIRED_SOURCE_FILES = [
   "src/cli.ts",

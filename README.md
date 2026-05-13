@@ -38,11 +38,11 @@ Node 22 のローカル環境では、依存 package を追加せずに ops base
 
 ```bash
 npm run build
+npm run verify
 npm test
 npm run ops -- status
 npm run ops -- verify-artifacts
 npm run ops -- safety-scan
-bash scripts/verify.sh
 ```
 
 `npm run ops -- status` は package script、TS 対象 file、runtime 出力の除外設定を JSON で返します。

@@ -1,14 +1,15 @@
 #!/usr/bin/env node
 
-import { createRequire } from "node:module";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+const path = require("node:path");
 
-const require = createRequire(import.meta.url);
-const scriptDir = path.dirname(fileURLToPath(import.meta.url));
-const rootDir = path.resolve(scriptDir, "..");
+type RequiredModule = {
+  file: string;
+  exports: string[];
+};
 
-const requiredModules = [
+const rootDir = path.resolve(__dirname, "..");
+
+const requiredModules: RequiredModule[] = [
   {
     file: "src/cli.ts",
     exports: ["run"]
@@ -27,7 +28,7 @@ const requiredModules = [
   }
 ];
 
-function fail(message, detail) {
+function fail(message: string, detail?: unknown): never {
   console.error(message);
   if (detail) {
     console.error(JSON.stringify(detail, null, 2));
@@ -61,10 +62,10 @@ const status = collectStatus(rootDir);
 
 if (!status.ok) {
   fail("Ops status check failed.", {
-    scripts: status.package.scripts.filter((script) => !script.present),
-    includes: status.tsconfig.include.filter((entry) => !entry.present),
-    sourceFiles: status.sourceFiles.filter((file) => !file.present),
-    gitignore: status.gitignore.required.filter((entry) => !entry.ignored)
+    scripts: status.package.scripts.filter((script: { present: boolean }) => !script.present),
+    includes: status.tsconfig.include.filter((entry: { present: boolean }) => !entry.present),
+    sourceFiles: status.sourceFiles.filter((file: { present: boolean }) => !file.present),
+    gitignore: status.gitignore.required.filter((entry: { ignored: boolean }) => !entry.ignored)
   });
 }
 

@@ -6,7 +6,8 @@
   "main": ".vite/build/main.js",
   "private": true,
   "scripts": {
-    "build": "node --no-warnings scripts/build-ops.mjs",
+    "build": "node --no-warnings scripts/build-ops.ts",
+    "verify": "node --no-warnings scripts/verify.ts",
     "test": "node --no-warnings --test tests/*.test.ts",
     "ops": "node --no-warnings src/cli.ts",
     "start": "electron-forge start",
